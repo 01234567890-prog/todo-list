@@ -1,0 +1,17 @@
+.button :hover {
+  transform: translateY(-4px);
+  box-shadow: 0 7px 7px rgba(0, 0, 0, 0.4);
+}
+
+.button {
+  transition: all 0.2s !important;
+}
+
+.card {
+  transition: all 0.2s !important;
+}
+.card:hover {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-shadow: 0 7px 7px rgba(0, 0, 0, 0.4);
+}
