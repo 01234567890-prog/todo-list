@@ -9,14 +9,27 @@ import IconButton from "@mui/material/IconButton";
 import CachedIcon from "@mui/icons-material/Cached";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import "../css_module/style.css";
-import { useContext } from "react";
+import { useContext , useState} from "react";
 import { TodosContext } from "../contxt/todosContext";
+
+// dialog_import :
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle'; 
+import Button from '@mui/material/Button';
+
+
+
 
 function Todo({todo, handlCheck}) {
 
   const {todos,setTodos} = useContext(TodosContext)
+  const [showDeleteAlert , setShowDeleteAlert] = useState(false);
 
 
+// EVENT HANDLERS 
   function  handleCheckClick(){
      const updatedTodos = todos.map((t) => {
       if(t.id === todo.id) {
@@ -31,8 +44,62 @@ function Todo({todo, handlCheck}) {
     })
     setTodos(updatedTodos)
   }
+  
+
+
+  function handleDeleteClick() {
+    setShowDeleteAlert(true) 
+    
+  }
+  function handleClose() {
+    setShowDeleteAlert(false) 
+    
+  }
+
+  function handleDeleteConfirm(){
+    const newTodos =todos.filter((t) => {
+      if(t.id === todo.id) 
+      // {
+      //  return false 
+      // }else{
+      //   return true
+      // }
+      return t.id != todo.id
+    })
+    setTodos(newTodos)
+  }
+  // ==EVENT HANDLERS
   return (
     <>
+    {/* delete_modal */}
+     <Dialog
+        open={showDeleteAlert}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are u sure u want to Delete tthis Task..?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           If this task is deleted u cannot recover it..
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button style={{background:"green", color:"white"}} 
+          onClick={handleClose} >Close</Button>
+          <Button style={{background:"red" , color:"white"}} 
+          onClick={handleDeleteConfirm}
+          
+          autoFocus>
+            Delete 
+          </Button>
+        </DialogActions>
+      </Dialog>
+    {/*== delete_modal ==*/}
+    
+    
       <Card
         className="card"
         sx={{
@@ -126,6 +193,8 @@ function Todo({todo, handlCheck}) {
                 >
                   <CachedIcon />
                 </IconButton>
+
+                {/* delete_Button */}
                 <IconButton
                   style={{
                     fontSize: "0.8rem",
@@ -135,9 +204,11 @@ function Todo({todo, handlCheck}) {
                     background: "white",
                     border: "solid #d61b1b 3px",
                   }}
+                  onClick={handleDeleteClick}
                 >
                   <DeleteOutlineIcon />
                 </IconButton>
+                {/* ==Delete_Button== */}
               </main>
             </Grid>
           </Grid>
