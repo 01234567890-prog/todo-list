@@ -19,6 +19,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle'; 
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 
 
@@ -27,6 +28,8 @@ function Todo({todo, handlCheck}) {
 
   const {todos,setTodos} = useContext(TodosContext)
   const [showDeleteAlert , setShowDeleteAlert] = useState(false);
+  const [showUpdateAlert,setShowUpdateAlert] = useState(false)
+  const [upDatedTodo,setUpDatedTodo] = useState({title:todo.title,details:todo.details})
 
 
 // EVENT HANDLERS 
@@ -51,14 +54,14 @@ function Todo({todo, handlCheck}) {
     setShowDeleteAlert(true) 
     
   }
-  function handleClose() {
+  function handleDeletAlertClose() {
     setShowDeleteAlert(false) 
     
   }
 
   function handleDeleteConfirm(){
     const newTodos =todos.filter((t) => {
-      if(t.id === todo.id) 
+      // if(t.id === todo.id) 
       // {
       //  return false 
       // }else{
@@ -68,13 +71,40 @@ function Todo({todo, handlCheck}) {
     })
     setTodos(newTodos)
   }
+
+
+  function handleUpdateClick() {
+    setShowUpdateAlert(true) 
+    
+  }
+  function handleUpdateAlertClose() {
+    setShowUpdateAlert(false) 
+    
+  }
+  function handleUpdateConfirm() {
+    const upDatedTodos = todos.map((t) => {
+      if(t.id === todo.id) {
+        return{...t,title:upDatedTodo.title,details:upDatedTodo.details}
+      }else{
+        return t ;
+      }
+    })
+    setTodos(upDatedTodos)
+    setShowUpdateAlert(false)
+    
+
+  }
+
+
+
+
   // ==EVENT HANDLERS
   return (
     <>
     {/* delete_modal */}
      <Dialog
         open={showDeleteAlert}
-        onClose={handleClose}
+        onClose={handleDeletAlertClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -88,7 +118,7 @@ function Todo({todo, handlCheck}) {
         </DialogContent>
         <DialogActions>
           <Button style={{background:"green", color:"white"}} 
-          onClick={handleClose} >Close</Button>
+          onClick={handleDeletAlertClose} >Close</Button>
           <Button style={{background:"red" , color:"white"}} 
           onClick={handleDeleteConfirm}
           
@@ -98,6 +128,55 @@ function Todo({todo, handlCheck}) {
         </DialogActions>
       </Dialog>
     {/*== delete_modal ==*/}
+
+    {/* UPDATE_modal */}
+     <Dialog
+        open={showUpdateAlert}
+        onClose={handleUpdateAlertClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"update task..........................................."}
+        </DialogTitle>
+        <TextField
+              autoFocus
+              required
+              id="name"
+              label="Task Title"
+              fullWidth
+              variant="standard"
+              value={upDatedTodo.title}
+              onChange={(event) => {
+                setUpDatedTodo({...upDatedTodo,title:event.target.value})
+              }}
+            />
+
+            <TextField
+              autoFocus
+              required
+              id="name"
+              label="Details"
+              fullWidth
+              variant="standard"
+              value={upDatedTodo.details}
+              onChange={(event) => {
+                setUpDatedTodo({...upDatedTodo,details:event.target.value})
+              }}
+            />
+            
+        <DialogActions>
+          <Button style={{background:"green", color:"white"}} 
+          onClick={handleUpdateAlertClose} >close</Button>
+          <Button style={{background:"blue" , color:"white"}} 
+          onClick={handleUpdateConfirm}
+          
+          autoFocus>
+            update 
+          </Button>
+        </DialogActions>
+      </Dialog>
+    {/*== update_modal ==*/}
     
     
       <Card
@@ -181,6 +260,9 @@ function Todo({todo, handlCheck}) {
                 </IconButton>
                 {/* ==chekButton== */}
 
+
+                {/* ===UPDATEBUTTON== */}
+
                 <IconButton
                   style={{
                     fontSize: "0.8rem",
@@ -190,9 +272,14 @@ function Todo({todo, handlCheck}) {
                     background: "white",
                     border: "solid #3169e2 3px",
                   }}
+                  onClick={handleUpdateClick}
                 >
                   <CachedIcon />
                 </IconButton>
+
+                {/* ===UPDATEBUTTON== */}
+
+
 
                 {/* delete_Button */}
                 <IconButton
