@@ -43,8 +43,27 @@ export default function TodoList() {
   // const[todos,setTodos]= useState(initialTodos)
   const { todos, setTodos } = useContext(TodosContext);
   const [titleInput, setTitleInput] = useState("");
+  const [displayedTodosType, SetDisplayedTodosType] = useState("all");
 
-  const todosJsx = todos.map((t) => {
+  // filteration arrays
+  const completedTodos = todos.filter((t) => {
+    return t.isCompleted;
+  });
+
+  const notCompletedTodos = todos.filter((t) => {
+    return !t.isCompleted;
+  });
+
+  let todosToBeRender = todos;
+  if (displayedTodosType === "completed") {
+    todosToBeRender = completedTodos;
+  } else if (displayedTodosType === "non-completed") {
+    todosToBeRender = notCompletedTodos;
+  } else {
+    todosToBeRender = todos;
+  }
+
+  const todosJsx = todosToBeRender.map((t) => {
     return (
       <Todo
         key={t.id}
@@ -56,11 +75,16 @@ export default function TodoList() {
       />
     );
   });
+
   useEffect(() => {
     console.log("calling useEffect");
     const storageTodo = JSON.parse(localStorage.getItem("todos"));
     setTodos(storageTodo);
   }, []);
+
+  function changeDisplayedType(e) {
+    SetDisplayedTodosType(e.target.value);
+  }
 
   function handelAddClick() {
     const newTodo = {
@@ -113,6 +137,8 @@ export default function TodoList() {
               gap: "0",
               marginTop: "20px",
             }}
+            value={displayedTodosType}
+            onChange={changeDisplayedType}
           >
             <ToggleButton
               style={{
@@ -127,7 +153,7 @@ export default function TodoList() {
                 color: "white",
                 fontFamily: "a",
               }}
-              value="right"
+              value="all"
             >
               All
             </ToggleButton>
@@ -145,7 +171,7 @@ export default function TodoList() {
                 color: "white",
                 fontFamily: "a",
               }}
-              value="left"
+              value="completed"
             >
               CPD
             </ToggleButton>
@@ -162,7 +188,7 @@ export default function TodoList() {
                 color: "white",
                 fontFamily: "a",
               }}
-              value="center"
+              value="non-completed"
             >
               In P
             </ToggleButton>
