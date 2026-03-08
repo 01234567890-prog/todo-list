@@ -113,7 +113,10 @@ export default function TodoList() {
           alignItems: "center",
         }}
       >
-        <Card sx={{ minWidth: 600, background: "", borderRadius: "20px" }}>
+        <Card
+          sx={{ minWidth: 600, background: "", borderRadius: "20px" }}
+          style={{ maxHeight: "80vh", overflow: "scroll" }}
+        >
           <CardContent>
             <Typography
               style={{
@@ -241,6 +244,7 @@ export default function TodoList() {
                 onClick={(event) => {
                   handelAddClick();
                 }}
+                disabled={titleInput.length === 0}
               >
                 ADD
               </Button>

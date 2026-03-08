@@ -160,7 +160,7 @@ function Todo({ todo, handlCheck }) {
 
         <DialogActions>
           <Button
-            style={{ background: "green", color: "white" }}
+            style={{ background: "green", color: "white", fontFamily: "a" }}
             onClick={handleUpdateAlertClose}
           >
             close
@@ -197,7 +197,12 @@ function Todo({ todo, handlCheck }) {
               }}
             >
               <Typography
-                style={{ textAlign: "left", color: "red", fontFamily: "a" }}
+                style={{
+                  textAlign: "left",
+                  color: "red",
+                  fontFamily: "a",
+                  textDecoration: todo.isCompleted ? "line-through" : "none",
+                }}
                 variant="h5"
               >
                 <i>{todo.title}</i>
