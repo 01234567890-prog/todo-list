@@ -141,6 +141,7 @@ export default function TodoList() {
               marginTop: "20px",
             }}
             value={displayedTodosType}
+            exclusive={true}
             onChange={changeDisplayedType}
           >
             <ToggleButton
