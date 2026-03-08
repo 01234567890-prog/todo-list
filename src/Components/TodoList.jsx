@@ -16,8 +16,7 @@ import "../css_module/style.css";
 import { v4 as uuidv4 } from "uuid";
 
 import { TodosContext } from "../contxt/todosContext";
-import { useContext } from "react";
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 
 // const initialTodos  = [
 //   {
@@ -42,42 +41,42 @@ import { useState } from "react";
 
 export default function TodoList() {
   // const[todos,setTodos]= useState(initialTodos)
-  const {todos,setTodos} = useContext(TodosContext)
-  const[titleInput,setTitleInput]=useState("")
+  const { todos, setTodos } = useContext(TodosContext);
+  const [titleInput, setTitleInput] = useState("");
 
   const todosJsx = todos.map((t) => {
-    return <Todo 
-    key={t.id} 
-    todo={t}
-    handlCheck={handleCheckClick}
-    // title={t.title} 
-    // details={t.details} 
-    // isCompleted={t.isCompleted}
-    />;
+    return (
+      <Todo
+        key={t.id}
+        todo={t}
+        handlCheck={handleCheckClick}
+        // title={t.title}
+        // details={t.details}
+        // isCompleted={t.isCompleted}
+      />
+    );
   });
+  useEffect(() => {
+    console.log("calling useEffect");
+    const storageTodo = JSON.parse(localStorage.getItem("todos"));
+    setTodos(storageTodo);
+  }, []);
 
-  function handelAddClick(){
+  function handelAddClick() {
     const newTodo = {
-      id:uuidv4(),
-      title:titleInput,
-      details:"",
-      isCompleted : false,
-    }
-    const updatedTodos = [...todos,newTodo] ;
-    setTodos(updatedTodos)
-    localStorage.setItem("todos",JSON.stringify(updatedTodos));
-    setTitleInput("")
+      id: uuidv4(),
+      title: titleInput,
+      details: "",
+      isCompleted: false,
+    };
+    const updatedTodos = [...todos, newTodo];
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    setTitleInput("");
   }
 
-  // const storageTodo = JSON.parse(localStorage.getItem("todos"))
-  // setTodos(storageTodo)
+  function handleCheckClick(todoId) {}
 
-  function handleCheckClick(todoId) {
-    
-  }
-
-
-  
   return (
     <>
       <Container
@@ -199,7 +198,7 @@ export default function TodoList() {
                 variant="outlined"
                 value={titleInput}
                 onChange={(event) => {
-                  setTitleInput(event.target.value)
+                  setTitleInput(event.target.value);
                 }}
               />
             </Grid>
@@ -214,7 +213,7 @@ export default function TodoList() {
                 }}
                 variant="contained"
                 onClick={(event) => {
-                  handelAddClick()
+                  handelAddClick();
                 }}
               >
                 ADD

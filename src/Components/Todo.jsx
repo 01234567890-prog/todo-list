@@ -9,100 +9,89 @@ import IconButton from "@mui/material/IconButton";
 import CachedIcon from "@mui/icons-material/Cached";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import "../css_module/style.css";
-import { useContext , useState} from "react";
+import { useContext, useState } from "react";
 import { TodosContext } from "../contxt/todosContext";
 
 // dialog_import :
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle'; 
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
+function Todo({ todo, handlCheck }) {
+  const { todos, setTodos } = useContext(TodosContext);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [showUpdateAlert, setShowUpdateAlert] = useState(false);
+  const [upDatedTodo, setUpDatedTodo] = useState({
+    title: todo.title,
+    details: todo.details,
+  });
 
-
-
-function Todo({todo, handlCheck}) {
-
-  const {todos,setTodos} = useContext(TodosContext)
-  const [showDeleteAlert , setShowDeleteAlert] = useState(false);
-  const [showUpdateAlert,setShowUpdateAlert] = useState(false)
-  const [upDatedTodo,setUpDatedTodo] = useState({title:todo.title,details:todo.details})
-
-
-// EVENT HANDLERS 
-  function  handleCheckClick(){
-     const updatedTodos = todos.map((t) => {
-      if(t.id === todo.id) {
+  // EVENT HANDLERS
+  function handleCheckClick() {
+    const updatedTodos = todos.map((t) => {
+      if (t.id === todo.id) {
         // if(t.isCompleted){
         //   t.isCompleted = false;
         // }else{
         //   t.isCompleted = true;
         // }
-        t.isCompleted = !t.isCompleted
+        t.isCompleted = !t.isCompleted;
       }
-      return t ;
-    })
-    setTodos(updatedTodos)
+      return t;
+    });
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   }
-  
-
 
   function handleDeleteClick() {
-    setShowDeleteAlert(true) 
-    
+    setShowDeleteAlert(true);
   }
   function handleDeletAlertClose() {
-    setShowDeleteAlert(false) 
-    
+    setShowDeleteAlert(false);
   }
 
-  function handleDeleteConfirm(){
-    const newTodos =todos.filter((t) => {
-      // if(t.id === todo.id) 
+  function handleDeleteConfirm() {
+    const newTodos = todos.filter((t) => {
+      // if(t.id === todo.id)
       // {
-      //  return false 
+      //  return false
       // }else{
       //   return true
       // }
-      return t.id != todo.id
-    })
-    setTodos(newTodos)
+      return t.id != todo.id;
+    });
+    setTodos(newTodos);
+    localStorage.setItem("todos", JSON.stringify(newTodos));
   }
-
 
   function handleUpdateClick() {
-    setShowUpdateAlert(true) 
-    
+    setShowUpdateAlert(true);
   }
   function handleUpdateAlertClose() {
-    setShowUpdateAlert(false) 
-    
+    setShowUpdateAlert(false);
   }
   function handleUpdateConfirm() {
     const upDatedTodos = todos.map((t) => {
-      if(t.id === todo.id) {
-        return{...t,title:upDatedTodo.title,details:upDatedTodo.details}
-      }else{
-        return t ;
+      if (t.id === todo.id) {
+        return { ...t, title: upDatedTodo.title, details: upDatedTodo.details };
+      } else {
+        return t;
       }
-    })
-    setTodos(upDatedTodos)
-    setShowUpdateAlert(false)
-    
-
+    });
+    setTodos(upDatedTodos);
+    setShowUpdateAlert(false);
+    localStorage.setItem("todos", JSON.stringify(upDatedTodos));
   }
-
-
-
 
   // ==EVENT HANDLERS
   return (
     <>
-    {/* delete_modal */}
-     <Dialog
+      {/* delete_modal */}
+      <Dialog
         open={showDeleteAlert}
         onClose={handleDeletAlertClose}
         aria-labelledby="alert-dialog-title"
@@ -113,24 +102,29 @@ function Todo({todo, handlCheck}) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-           If this task is deleted u cannot recover it..
+            If this task is deleted u cannot recover it..
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button style={{background:"green", color:"white"}} 
-          onClick={handleDeletAlertClose} >Close</Button>
-          <Button style={{background:"red" , color:"white"}} 
-          onClick={handleDeleteConfirm}
-          
-          autoFocus>
-            Delete 
+          <Button
+            style={{ background: "green", color: "white" }}
+            onClick={handleDeletAlertClose}
+          >
+            Close
+          </Button>
+          <Button
+            style={{ background: "red", color: "white" }}
+            onClick={handleDeleteConfirm}
+            autoFocus
+          >
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
-    {/*== delete_modal ==*/}
+      {/*== delete_modal ==*/}
 
-    {/* UPDATE_modal */}
-     <Dialog
+      {/* UPDATE_modal */}
+      <Dialog
         open={showUpdateAlert}
         onClose={handleUpdateAlertClose}
         aria-labelledby="alert-dialog-title"
@@ -140,45 +134,49 @@ function Todo({todo, handlCheck}) {
           {"update task..........................................."}
         </DialogTitle>
         <TextField
-              autoFocus
-              required
-              id="name"
-              label="Task Title"
-              fullWidth
-              variant="standard"
-              value={upDatedTodo.title}
-              onChange={(event) => {
-                setUpDatedTodo({...upDatedTodo,title:event.target.value})
-              }}
-            />
+          autoFocus
+          required
+          id="name"
+          label="Task Title"
+          fullWidth
+          variant="standard"
+          value={upDatedTodo.title}
+          onChange={(event) => {
+            setUpDatedTodo({ ...upDatedTodo, title: event.target.value });
+          }}
+        />
 
-            <TextField
-              autoFocus
-              required
-              id="name"
-              label="Details"
-              fullWidth
-              variant="standard"
-              value={upDatedTodo.details}
-              onChange={(event) => {
-                setUpDatedTodo({...upDatedTodo,details:event.target.value})
-              }}
-            />
-            
+        <TextField
+          autoFocus
+          required
+          id="name"
+          label="Details"
+          fullWidth
+          variant="standard"
+          value={upDatedTodo.details}
+          onChange={(event) => {
+            setUpDatedTodo({ ...upDatedTodo, details: event.target.value });
+          }}
+        />
+
         <DialogActions>
-          <Button style={{background:"green", color:"white"}} 
-          onClick={handleUpdateAlertClose} >close</Button>
-          <Button style={{background:"blue" , color:"white"}} 
-          onClick={handleUpdateConfirm}
-          
-          autoFocus>
-            update 
+          <Button
+            style={{ background: "green", color: "white" }}
+            onClick={handleUpdateAlertClose}
+          >
+            close
+          </Button>
+          <Button
+            style={{ background: "blue", color: "white" }}
+            onClick={handleUpdateConfirm}
+            autoFocus
+          >
+            update
           </Button>
         </DialogActions>
       </Dialog>
-    {/*== update_modal ==*/}
-    
-    
+      {/*== update_modal ==*/}
+
       <Card
         className="card"
         sx={{
@@ -248,18 +246,17 @@ function Todo({todo, handlCheck}) {
                     fontSize: "0.8rem",
                     padding: "0.4em 0.8em",
                     margin: "2px",
-                    color: todo.isCompleted ?"white" : "#8bc34a",
-                    background:todo.isCompleted ? "#8bc34a" : "white",
+                    color: todo.isCompleted ? "white" : "#8bc34a",
+                    background: todo.isCompleted ? "#8bc34a" : "white",
                     border: "solid #8bc34a 3px",
                   }}
-                  onClick={()=>{
+                  onClick={() => {
                     handleCheckClick();
                   }}
                 >
                   <CheckIcon />
                 </IconButton>
                 {/* ==chekButton== */}
-
 
                 {/* ===UPDATEBUTTON== */}
 
@@ -278,8 +275,6 @@ function Todo({todo, handlCheck}) {
                 </IconButton>
 
                 {/* ===UPDATEBUTTON== */}
-
-
 
                 {/* delete_Button */}
                 <IconButton

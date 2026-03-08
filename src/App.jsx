@@ -4,8 +4,7 @@ import { useState } from "react";
 import { TodosContext } from "./contxt/todosContext";
 import { v4 as uuidv4 } from "uuid";
 
-
-const initialTodos  = [
+const initialTodos = [
   {
     id: uuidv4(),
     title: "read..",
@@ -27,14 +26,13 @@ const initialTodos  = [
 ];
 
 function App() {
-  const[todos,setTodos]= useState(initialTodos)
+  const [todos, setTodos] = useState(initialTodos);
   return (
     <div style={{ background: "#11022e" }}>
-      <h1 style={{fontFamily:"a"}}>slm alaykom</h1>
-      <TodosContext.Provider value={{todos:todos,setTodos:setTodos}}>
-      <TodoList />
+      <h1 style={{ fontFamily: "a" }}>slm alaykom</h1>
+      <TodosContext.Provider value={{ todos: todos, setTodos: setTodos }}>
+        <TodoList />
       </TodosContext.Provider>
-      
     </div>
   );
 }
