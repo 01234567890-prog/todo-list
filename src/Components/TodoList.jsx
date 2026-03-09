@@ -16,7 +16,7 @@ import "../css_module/style.css";
 import { v4 as uuidv4 } from "uuid";
 
 import { TodosContext } from "../contxt/todosContext";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useMemo } from "react";
 
 // const initialTodos  = [
 //   {
@@ -46,13 +46,19 @@ export default function TodoList() {
   const [displayedTodosType, SetDisplayedTodosType] = useState("all");
 
   // filteration arrays
-  const completedTodos = todos.filter((t) => {
-    return t.isCompleted;
-  });
+  const completedTodos = useMemo(() => {
+    return todos.filter((t) => {
+      console.log("calling completed todos");
+      return t.isCompleted;
+    });
+  }, [todos]);
 
-  const notCompletedTodos = todos.filter((t) => {
-    return !t.isCompleted;
-  });
+  const notCompletedTodos = useMemo(() => {
+    return todos.filter((t) => {
+      console.log("calling non-completed todos");
+      return !t.isCompleted;
+    });
+  }, [todos]);
 
   let todosToBeRender = todos;
   if (displayedTodosType === "completed") {
