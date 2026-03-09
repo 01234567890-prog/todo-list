@@ -11,19 +11,21 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import "../css_module/style.css";
 import { useContext, useState } from "react";
 import { TodosContext } from "../contxt/todosContext";
+
 // dialog_import :
+
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
-function Todo({ todo, handlCheck }) {
+function Todo({ todo, handlCheck, showDelete , showUpdate }) {
   const { todos, setTodos } = useContext(TodosContext);
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const [showUpdateAlert, setShowUpdateAlert] = useState(false);
+
+  
   const [upDatedTodo, setUpDatedTodo] = useState({
     title: todo.title,
     details: todo.details,
@@ -47,134 +49,19 @@ function Todo({ todo, handlCheck }) {
   }
 
   function handleDeleteClick() {
-    setShowDeleteAlert(true);
-  }
-  function handleDeletAlertClose() {
-    setShowDeleteAlert(false);
+    showDelete(todo);
   }
 
-  function handleDeleteConfirm() {
-    const newTodos = todos.filter((t) => {
-      // if(t.id === todo.id)
-      // {
-      //  return false
-      // }else{
-      //   return true
-      // }
-      return t.id != todo.id;
-    });
-    setTodos(newTodos);
-    localStorage.setItem("todos", JSON.stringify(newTodos));
+  function handleUpdateClick(todo) {
+    showUpdate(todo)
+    
   }
-
-  function handleUpdateClick() {
-    setShowUpdateAlert(true);
-  }
-  function handleUpdateAlertClose() {
-    setShowUpdateAlert(false);
-  }
-  function handleUpdateConfirm() {
-    const upDatedTodos = todos.map((t) => {
-      if (t.id === todo.id) {
-        return { ...t, title: upDatedTodo.title, details: upDatedTodo.details };
-      } else {
-        return t;
-      }
-    });
-    setTodos(upDatedTodos);
-    setShowUpdateAlert(false);
-    localStorage.setItem("todos", JSON.stringify(upDatedTodos));
-  }
+  
 
   // ==EVENT HANDLERS
   return (
     <>
-      {/* delete_modal */}
-      <Dialog
-        open={showDeleteAlert}
-        onClose={handleDeletAlertClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Are u sure u want to Delete tthis Task..?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            If this task is deleted u cannot recover it..
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            style={{ background: "green", color: "white" }}
-            onClick={handleDeletAlertClose}
-          >
-            Close
-          </Button>
-          <Button
-            style={{ background: "red", color: "white" }}
-            onClick={handleDeleteConfirm}
-            autoFocus
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/*== delete_modal ==*/}
-
-      {/* UPDATE_modal */}
-      <Dialog
-        open={showUpdateAlert}
-        onClose={handleUpdateAlertClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"update task..........................................."}
-        </DialogTitle>
-        <TextField
-          autoFocus
-          required
-          id="name"
-          label="Task Title"
-          fullWidth
-          variant="standard"
-          value={upDatedTodo.title}
-          onChange={(event) => {
-            setUpDatedTodo({ ...upDatedTodo, title: event.target.value });
-          }}
-        />
-
-        <TextField
-          autoFocus
-          required
-          id="name"
-          label="Details"
-          fullWidth
-          variant="standard"
-          value={upDatedTodo.details}
-          onChange={(event) => {
-            setUpDatedTodo({ ...upDatedTodo, details: event.target.value });
-          }}
-        />
-
-        <DialogActions>
-          <Button
-            style={{ background: "green", color: "white", fontFamily: "a" }}
-            onClick={handleUpdateAlertClose}
-          >
-            close
-          </Button>
-          <Button
-            style={{ background: "blue", color: "white" }}
-            onClick={handleUpdateConfirm}
-            autoFocus
-          >
-            update
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/*== update_modal ==*/}
+      
 
       <Card
         className="card"

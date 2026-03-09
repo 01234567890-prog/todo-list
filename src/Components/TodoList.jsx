@@ -15,6 +15,14 @@ import TextField from "@mui/material/TextField";
 import "../css_module/style.css";
 import { v4 as uuidv4 } from "uuid";
 
+// dialog_import :
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 import { TodosContext } from "../contxt/todosContext";
 import { useContext, useState, useEffect, useMemo } from "react";
 
@@ -41,9 +49,14 @@ import { useContext, useState, useEffect, useMemo } from "react";
 
 export default function TodoList() {
   // const[todos,setTodos]= useState(initialTodos)
+  const [alertTodo, setAlertTodo] = useState("");
   const { todos, setTodos } = useContext(TodosContext);
   const [titleInput, setTitleInput] = useState("");
   const [displayedTodosType, SetDisplayedTodosType] = useState("all");
+
+  //alert state
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [showUpdateAlert, setShowUpdateAlert] = useState(false);
 
   // filteration arrays
   const completedTodos = useMemo(() => {
@@ -69,19 +82,6 @@ export default function TodoList() {
     todosToBeRender = todos;
   }
 
-  const todosJsx = todosToBeRender.map((t) => {
-    return (
-      <Todo
-        key={t.id}
-        todo={t}
-        handlCheck={handleCheckClick}
-        // title={t.title}
-        // details={t.details}
-        // isCompleted={t.isCompleted}
-      />
-    );
-  });
-
   useEffect(() => {
     console.log("calling useEffect");
     const storageTodo = JSON.parse(localStorage.getItem("todos")) ?? [];
@@ -92,6 +92,7 @@ export default function TodoList() {
     SetDisplayedTodosType(e.target.value);
   }
 
+  //HANDELERS
   function handelAddClick() {
     const newTodo = {
       id: uuidv4(),
@@ -107,8 +108,150 @@ export default function TodoList() {
 
   function handleCheckClick(todoId) {}
 
+  function openDeleteAlert(todo) {
+    setAlertTodo(todo);
+    setShowDeleteAlert(true);
+  }
+
+  function openUpdateAlert(todo) {
+    setAlertTodo(todo)
+    setShowUpdateAlert(true)
+
+  }
+
+  function handleDeletAlertClose() {
+    setShowDeleteAlert(false);
+  }
+
+  function handleDeleteConfirm() {
+    const newTodos = todos.filter((t) => {
+      return t.id != alertTodo.id;
+    });
+    setTodos(newTodos);
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+    setShowDeleteAlert(false);
+  }
+
+  function handleUpdateAlertClose() {
+    setShowUpdateAlert(false);
+  }
+  function handleUpdateConfirm() {
+    const upDatedTodos = todos.map((t) => {
+      if (t.id === alertTodo.id) {
+        return { ...t, title: alertTodo.title, details: alertTodo.details };
+      } else {
+        return t;
+      }
+    });
+    setTodos(upDatedTodos);
+    setShowUpdateAlert(false);
+    localStorage.setItem("todos", JSON.stringify(upDatedTodos));
+  }
+
+  const todosJsx = todosToBeRender.map((t) => {
+    return (
+      <Todo
+        key={t.id}
+        todo={t}
+        showDelete={openDeleteAlert}
+        showUpdate={openUpdateAlert}
+        handlCheck={handleCheckClick}
+        // title={t.title}
+        // details={t.details}
+        // isCompleted={t.isCompleted}
+      />
+    );
+  });
+
   return (
     <>
+      {/* delete_modal */}
+      <Dialog
+        open={showDeleteAlert}
+        onClose={handleDeletAlertClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are u sure u want to Delete tthis Task..?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            If this task is deleted u cannot recover it..
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            style={{ background: "green", color: "white" }}
+            onClick={handleDeletAlertClose}
+          >
+            Close
+          </Button>
+          <Button
+            style={{ background: "red", color: "white" }}
+            onClick={handleDeleteConfirm}
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/*== delete_modal ==*/}
+
+      {/* UPDATE_modal */}
+      <Dialog
+        open={showUpdateAlert}
+        onClose={handleUpdateAlertClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"update task..........................................."}
+        </DialogTitle>
+        <TextField
+          autoFocus
+          required
+          id="name"
+          label="Task Title"
+          fullWidth
+          variant="standard"
+          value={alertTodo.title}
+          onChange={(event) => {
+            setUpDatedTodo({ ...upDatedTodo, title: event.target.value });
+          }}
+        />
+
+        <TextField
+          autoFocus
+          required
+          id="name"
+          label="Details"
+          fullWidth
+          variant="standard"
+          value={alertTodo.details}
+          onChange={(event) => {
+            setUpDatedTodo({ ...upDatedTodo, details: event.target.value });
+          }}
+        />
+
+        <DialogActions>
+          <Button
+            style={{ background: "green", color: "white", fontFamily: "a" }}
+            onClick={handleUpdateAlertClose}
+          >
+            close
+          </Button>
+          <Button
+            style={{ background: "blue", color: "white" }}
+            onClick={handleUpdateConfirm}
+            autoFocus
+          >
+            update
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/*== update_modal ==*/}
+
       <Container
         maxWidth="md"
         sx={{
